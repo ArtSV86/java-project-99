@@ -3,7 +3,7 @@ plugins {
 	checkstyle
 	jacoco
 	java
-	id("org.springframework.boot") version "3.3.0"
+	id("org.springframework.boot") version "3.2.6"
 	id("io.spring.dependency-management") version "1.1.5"
 }
 
@@ -15,7 +15,9 @@ application {
 }
 
 java {
-	sourceCompatibility = JavaVersion.VERSION_21
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(21)
+	}
 }
 
 configurations {
@@ -42,6 +44,7 @@ dependencies {
 
 	implementation("org.openapitools:jackson-databind-nullable:0.2.6")
 	implementation("org.mapstruct:mapstruct:1.6.0.Beta1")
+	testImplementation("org.projectlombok:lombok:1.18.26")
 	annotationProcessor("org.mapstruct:mapstruct-processor:1.6.0.Beta1")
 	compileOnly("org.projectlombok:lombok")
 	annotationProcessor("org.projectlombok:lombok")
@@ -50,6 +53,8 @@ dependencies {
 	implementation("org.instancio:instancio-junit:3.6.0")
 	implementation("net.javacrumbs.json-unit:json-unit-assertj:3.2.2")
 	implementation("net.datafaker:datafaker:2.0.2")
+	implementation("org.springframework.security:spring-security-web")
+	implementation("org.springframework.security:spring-security-config")
 
 	runtimeOnly("com.h2database:h2:2.2.224")
 	testImplementation("org.springframework.security:spring-security-test")
