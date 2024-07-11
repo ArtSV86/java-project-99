@@ -3,6 +3,7 @@ plugins {
 	checkstyle
 	jacoco
 	java
+	id("io.freefair.lombok") version "8.4"
 	id("org.springframework.boot") version "3.2.6"
 	id("io.spring.dependency-management") version "1.1.5"
 }
@@ -31,6 +32,12 @@ repositories {
 }
 
 dependencies {
+	compileOnly("org.projectlombok:lombok:1.18.30")
+	annotationProcessor("org.projectlombok:lombok:1.18.30")
+	annotationProcessor("org.projectlombok:lombok-mapstruct-binding:0.2.0")
+	implementation("org.mapstruct:mapstruct:1.5.5.Final")
+	annotationProcessor("org.mapstruct:mapstruct-processor:1.5.5.Final")
+
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springframework.boot:spring-boot-starter-validation")
@@ -43,11 +50,7 @@ dependencies {
 	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0")
 
 	implementation("org.openapitools:jackson-databind-nullable:0.2.6")
-	implementation("org.mapstruct:mapstruct:1.6.0.Beta1")
-	testImplementation("org.projectlombok:lombok:1.18.26")
-	annotationProcessor("org.mapstruct:mapstruct-processor:1.6.0.Beta1")
-	compileOnly("org.projectlombok:lombok")
-	annotationProcessor("org.projectlombok:lombok")
+
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 	implementation("org.instancio:instancio-junit:3.6.0")
