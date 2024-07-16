@@ -15,7 +15,7 @@ public class AppApplication {
     }
     @Bean
     public static Faker getFaker() {
-		return new Faker();
-	}
+        return new Faker();
+    }
 
 }
