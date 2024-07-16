@@ -22,4 +22,4 @@ report:
 	./gradlew jacocoTestReport
 	
 lint:
-    ./gradlew checkstyleMain checkstyleTest	
+	./gradlew checkstyleMain checkstyleTest	
