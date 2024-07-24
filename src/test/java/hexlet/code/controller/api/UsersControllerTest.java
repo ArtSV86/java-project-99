@@ -21,6 +21,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
+import java.util.HashMap;
+
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
@@ -173,6 +175,7 @@ public class UsersControllerTest {
         assertThat(user.getLastName()).isEqualTo(testUser.getLastName());
         assertThat(user.getEmail()).isEqualTo(testUser.getEmail());
     }
+
     @Test
     public void testUpdateUserPartial() throws Exception {
         userRepository.save(testUser);
@@ -249,5 +252,6 @@ public class UsersControllerTest {
 
         mockMvc.perform(request)
                 .andExpect(status().isNoContent());
+
     }
 }

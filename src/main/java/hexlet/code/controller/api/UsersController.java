@@ -3,72 +3,65 @@ package hexlet.code.controller.api;
 import hexlet.code.dto.user.UserCreateDTO;
 import hexlet.code.dto.user.UserDTO;
 import hexlet.code.dto.user.UserUpdateDTO;
-import hexlet.code.exception.ResourceNotFoundException;
-import hexlet.code.mapper.UserMapper;
-import hexlet.code.repository.UserRepository;
+import hexlet.code.service.UserService;
+import hexlet.code.util.UserUtils;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
 
 
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/users")
 @AllArgsConstructor
 public class UsersController {
+    private final UserService userService;
+    private final UserUtils userUtils;
+    private static final String CURRENT_USER = "@userUtils.getCurrentUser().getId() == #id";
 
-    @Autowired
-    private UserRepository repository;
-
-    @Autowired
-    private UserMapper userMapper;
-
-    @GetMapping("/users")
-    ResponseEntity<List<UserDTO>> index() {
-        var users = repository.findAll();
-        var result = users.stream()
-                .map(userMapper::map)
-                .toList();
+    @GetMapping(path = "")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<List<UserDTO>> index() {
+        List<UserDTO> users = userService.getAll();
         return ResponseEntity.ok()
                 .header("X-Total-Count", String.valueOf(users.size()))
-                .body(result);
+                .body(users);
     }
 
-    @PostMapping("/users")
+    @PostMapping(path = "")
     @ResponseStatus(HttpStatus.CREATED)
-    UserDTO create(@Valid @RequestBody UserCreateDTO userData) {
-        var user = userMapper.map(userData);
-        repository.save(user);
-        return userMapper.map(user);
+    public ResponseEntity<UserDTO> create(@Valid @RequestBody UserCreateDTO userData)
+            throws NoSuchAlgorithmException, InvalidKeySpecException {
+        UserDTO user = userService.create(userData);
+        return ResponseEntity.status(HttpStatus.CREATED).body(user);
     }
 
-    @PutMapping("/users/{id}")
+    @GetMapping(path = "/{id}")
     @ResponseStatus(HttpStatus.OK)
-    UserDTO update(@RequestBody UserUpdateDTO userData, @PathVariable Long id) {
-        var user = repository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Not Found"));
-        userMapper.update(userData, user);
-        repository.save(user);
-        var userDTO = userMapper.map(user);
-        return userDTO;
+    public ResponseEntity<UserDTO> show(@PathVariable Long id) {
+        UserDTO user = userService.findById(id);
+        return ResponseEntity.status(HttpStatus.OK).body(user);
     }
 
-    @GetMapping("/users/{id}")
+    @PutMapping(path = "/{id}")
     @ResponseStatus(HttpStatus.OK)
-    UserDTO show(@PathVariable Long id) {
-        var user = repository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Not Found"));
-        return userMapper.map(user);
+    @PreAuthorize(CURRENT_USER)
+    public ResponseEntity<UserDTO> update(@RequestBody @Valid UserUpdateDTO userData, @PathVariable Long id) {
+        UserDTO user = userService.update(userData, id);
+        return ResponseEntity.status(HttpStatus.OK).body(user);
+    }
+
+    @DeleteMapping(path = "/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize(CURRENT_USER)
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        userService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }

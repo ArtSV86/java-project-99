@@ -46,7 +46,7 @@ public class LabelControllerTest {
 
     private Label testLabel;
 
-    @Value("/api/label")
+    @Value("/api/labels")
     private String url;
 
     @Autowired
