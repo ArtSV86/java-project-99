@@ -6,6 +6,7 @@ plugins {
 	id("io.freefair.lombok") version "8.4"
 	id("org.springframework.boot") version "3.2.6"
 	id("io.spring.dependency-management") version "1.1.5"
+	id("io.sentry.jvm.gradle") version "4.4.1"
 }
 
 group = "hexlet.code"
@@ -64,6 +65,19 @@ dependencies {
 	testImplementation(platform("org.junit:junit-bom:5.10.1"))
 	testImplementation("org.junit.jupiter:junit-jupiter:5.10.1")
 
+}
+
+
+sentry {
+	includeSourceContext = true
+
+	org = "no"
+	projectName = "java-spring-boot"
+	authToken = System.getenv("SENTRY_AUTH_TOKEN")
+}
+
+tasks.sentryBundleSourcesJava {
+	enabled = System.getenv("SENTRY_AUTH_TOKEN") != null
 }
 
 tasks.withType<Test> {
