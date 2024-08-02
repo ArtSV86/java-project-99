@@ -26,7 +26,7 @@ import java.security.spec.InvalidKeySpecException;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping(path = "/api/users")
 @AllArgsConstructor
 public class UsersController {
     private final UserService userService;
